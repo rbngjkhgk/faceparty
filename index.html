@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceParty</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page {
+            display: none;
+            padding: 20px;
+        }
+        .page.active {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .header {
+            text-align: center;
+            padding: 15px 0;
+            background: linear-gradient(to right, #ff3366, #ff6699);
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            font-size: 18px;
+        }
+        .logo {
+            max-width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .profile-pic, .upload-pic, .person-pic {
+            width: 150px;
+            height: 150px;
+            background-color: #ddd;
+            border-radius: 10px;
+            margin: 20px auto;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            border: 2px dashed #ff3366;
+            animation: fadeInImage 0.3s ease-in;
+        }
+        @keyframes fadeInImage {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .button, .nav-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: #ff3366;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 14px;
+        }
+        .nav-button {
+            width: 48%;
+            display: inline-block;
+            margin: 5px 1%;
+            background-color: #ff6699;
+        }
+        .button:hover, .nav-button:hover {
+            background-color: #cc0033;
+            transform: scale(1.05);
+        }
+        .back-button {
+            width: 50%;
+            background-color: #ccc;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .back-button:hover {
+            background-color: #999;
+        }
+        .facelike-sent {
+            background-color: #4CAF50 !important;
+            color: white !important;
+            animation: pulse 0.5s ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .content-block {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            font-size: 14px;
+            animation: fadeInContent 0.3s ease-in;
+        }
+        @keyframes fadeInContent {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .list-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            font-size: 14px;
+            animation: fadeInItem 0.2s ease-in;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .list-item span {
+            cursor: pointer;
+            flex: 1;
+        }
+        @keyframes fadeInItem {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .list-item:hover {
+            background-color: #f0f0f0;
+            animation: hoverEffect 0.2s ease-in-out;
+        }
+        @keyframes hoverEffect {
+            from { transform: scale(1); }
+            to { transform: scale(1.02); }
+        }
+        .chat-message {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 14px;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #ff6699;
+            color: #fff;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            font-size: 12px;
+            animation: fadeInFooter 0.3s ease-in;
+        }
+        @keyframes fadeInFooter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .filters {
+            margin: 15px 0;
+        }
+        .filters select {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .club-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            margin: 10px 0;
+            animation: fadeInImage 0.3s ease-in;
+        }
+        .chat-section {
+            display: none;
+        }
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .home-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: #ff3366;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .home-button:hover {
+            background-color: #cc0033;
+            transform: translateX(-50%) scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page de connexion/inscription -->
+        <div id="photo-login" class="page active">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="content-block">
+                <h3>Connexion</h3>
+                <input type="email" id="login-email" class="search-bar" placeholder="E-mail">
+                <input type="password" id="login-password" class="search-bar" placeholder="Mot de passe">
+                <button class="button" onclick="login()">Se connecter</button>
+            </div>
+            <div class="content-block">
+                <h3>Inscription</h3>
+                <input type="text" id="signup-nom" class="search-bar" placeholder="Nom">
+                <input type="email" id="signup-email" class="search-bar" placeholder="E-mail">
+                <input type="text" id="signup-prenom" class="search-bar" placeholder="Prénom">
+                <input type="text" id="signup-boisson" class="search-bar" placeholder="Boisson préférée">
+                <input type="text" id="signup-taille" class="search-bar" placeholder="Taille (ex. 1m80)">
+                <select id="signup-eyes" class="search-bar">
+                    <option value="">Couleur des yeux</option>
+                    <option value="Bleus">Bleus</option>
+                    <option value="Verts">Verts</option>
+                    <option value="Marrons">Marrons</option>
+                    <option value="Gris">Gris</option>
+                </select>
+                <select id="signup-hair" class="search-bar">
+                    <option value="">Couleur des cheveux</option>
+                    <option value="Brun">Brun</option>
+                    <option value="Blond">Blond</option>
+                    <option value="Roux">Roux</option>
+                    <option value="Châtain">Châtain</option>
+                </select>
+                <select id="signup-nationality" class="search-bar">
+                    <option value="">Nationalité</option>
+                    <option value="Française">Française</option>
+                    <option value="Italienne">Italienne</option>
+                    <option value="Britannique">Britannique</option>
+                    <option value="Suédoise">Suédoise</option>
+                    <option value="Espagnole">Espagnole</option>
+                    <option value="Américaine">Américaine</option>
+                    <option value="Marocaine">Marocaine</option>
+                </select>
+                <input type="password" id="signup-password" class="search-bar" placeholder="Mot de passe">
+                <button class="button" onclick="signup()">Créer</button>
+            </div>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Photo 1: Page d'accueil -->
+        <div id="photo-1" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="profile-pic" id="profile-pic" style="background-image: url('https://via.placeholder.com/150?text=Fictif+Utilisateur');" onclick="showPage('photo-2')"></div>
+            <button class="button" onclick="showPage('stats-page')">Statistiques</button>
+            <button class="button" onclick="showPage('photo-3')">Soirées autour de moi</button>
+            <input type="text" class="search-bar" id="search-bar" placeholder="Rechercher un lieu festif..." onkeyup="searchPlaces()">
+            <div class="content-block" id="places-list">
+                <div class="list-item" onclick="showPage('photo-4')">Le Nocturne</div>
+                <div class="list-item" onclick="showPage('photo-4')">Le Pulse</div>
+            </div>
+            <button class="button" onclick="showPage('photo-7')">Messages</button>
+            <button class="button" onclick="showPage('photo-6')">Facelikes reçus</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Photo 2: Profil personnel -->
+        <div id="photo-2" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="upload-pic" id="upload-pic" onclick="document.getElementById('profile-upload').click()">
+                <span>Charger une photo</span>
+            </div>
+            <input type="file" id="profile-upload" style="display: none;" onchange="uploadProfilePic(event)">
+            <div class="content-block" id="profile-display">
+                <h3 id="profile-prenom"></h3>
+                <p id="profile-boisson"></p>
+                <p id="profile-taille"></p>
+                <p id="profile-eyes"></p>
+                <p id="profile-hair"></p>
+                <p id="profile-nationality"></p>
+            </div>
+            <button class="button" onclick="showEditProfileForm()">Modifier le profil</button>
+            <div class="content-block" id="edit-profile-form" style="display: none;">
+                <h3>Modifier le profil</h3>
+                <input type="text" id="edit-prenom" class="search-bar" placeholder="Prénom">
+                <input type="text" id="edit-boisson" class="search-bar" placeholder="Boisson préférée">
+                <input type="text" id="edit-taille" class="search-bar" placeholder="Taille (ex. 1m80)">
+                <select id="edit-eyes" class="search-bar">
+                    <option value="">Couleur des yeux</option>
+                    <option value="Bleus">Bleus</option>
+                    <option value="Verts">Verts</option>
+                    <option value="Marrons">Marrons</option>
+                    <option value="Gris">Gris</option>
+                </select>
+                <select id="edit-hair" class="search-bar">
+                    <option value="">Couleur des cheveux</option>
+                    <option value="Brun">Brun</option>
+                    <option value="Blond">Blond</option>
+                    <option value="Roux">Roux</option>
+                    <option value="Châtain">Châtain</option>
+                </select>
+                <select id="edit-nationality" class="search-bar">
+                    <option value="">Nationalité</option>
+                    <option value="Française">Française</option>
+                    <option value="Italienne">Italienne</option>
+                    <option value="Britannique">Britannique</option>
+                    <option value="Suédoise">Suédoise</option>
+                    <option value="Espagnole">Espagnole</option>
+                    <option value="Américaine">Américaine</option>
+                    <option value="Marocaine">Marocaine</option>
+                </select>
+                <button class="button" onclick="saveProfile()">Sauvegarder</button>
+            </div>
+            <button class="button" onclick="showPage('friends-page')">Amis</button>
+            <button class="button" onclick="showPage('photo-1')">Retour</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Photo 3: Détails des soirées -->
+        <div id="photo-3" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <input type="text" class="search-bar" id="search-bar-full" placeholder="Rechercher un lieu festif..." onkeyup="searchPlacesFull()">
+            <div class="content-block" id="places-list-full">
+                <div class="list-item" onclick="showPage('photo-4')">Le Nocturne</div>
+                <div class="list-item" onclick="showPage('photo-4')">Le Pulse</div>
+            </div>
+            <button class="button" onclick="showPage('photo-1')">Retour</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Photo 4: Détails du lieu -->
+        <div id="photo-4" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="club-image" style="background-image: url('https://via.placeholder.com/400x200?text=Fictif+Le+Nocturne+Électro+Chic+Pink/Purple+Neons+Crowd+Strobes');"></div>
+            <div class="content-block">
+                <p>Note : 4.5/5</p>
+                <p>Ambiance musicale : Électro</p>
+                <p>Dress code : Chic</p>
+                <p>Sélectivité : 10€, Ratio 1:1</p>
+                <p>Vidéos : [Simulé - Cliquez pour voir l’ambiance]</p>
+                <p>Participants FaceParty : 45</p>
+                <p>Amis présents ce soir : 2</p>
+                <p>Amis déjà allés : 8</p>
+            </div>
+            <button class="button" onclick="showPage('photo-5')">Rejoindre</button>
+            <button class="button" onclick="showPage('photo-3')">Retour</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Photo 5: Participants avec filtres -->
+        <div id="photo-5" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="filters">
+                <select id="filter-preferences" onchange="applyFilters()">
+                    <option value="all">Préférences (Filles/Garçons/Tous)</option>
+                    <option value="femmes">Filles</option>
+                    <option value="hommes">Garçons</option>
+                    <option value="tous">Les deux</option>
+                </select>
+                <select id="filter-age" onchange="applyFilters()">
+                    <option value="all">Âge</option>
+                    <option value="18-25">18-25</option>
+                    <option value="26-30">26-30</option>
+                </select>
+                <select id="filter-height" onchange="applyFilters()">
+                    <option value="all">Taille</option>
+                    <option value="petit">1m60-1m70</option>
+                    <option value="grand">1m70+</option>
+                </select>
+                <select id="filter-eyes" onchange="applyFilters()">
+                    <option value="all">Yeux</option>
+                    <option value="bleu">Bleu</option>
+                    <option value="vert">Vert</option>
+                    <option value="marron">Marrons</option>
+                    <option value="gris">Gris</option>
+                </select>
+                <select id="filter-hair" onchange="applyFilters()">
+                    <option value="all">Cheveux</option>
+                    <option value="brun">Brun</option>
+                    <option value="blond">Blond</option>
+                    <option value="roux">Roux</option>
+                    <option value="châtain">Châtain</option>
+                </select>
+                <select id="filter-nationality" onchange="applyFilters()">
+                    <option value="all">Origine</option>
+                    <option value="france">France</option>
+                    <option value="italie">Italie</option>
+                    <option value="royaume-uni">Royaume-Uni</option>
+                    <option value="suede">Suède</option>
+                    <option value="espagne">Espagne</option>
+                    <option value="usa">USA</option>
+                    <option value="maroc">Maroc</option>
+                </select>
+            </div>
+            <div class="content-block" id="participants-list"></div>
+            <button class="button" onclick="showPage('photo-4')">Retour</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Nouvelle page : Profil d'une personne -->
+        <div id="person-profile" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="person-pic" id="person-pic" style="background-image: url('https://via.placeholder.com/150?text=Fictif+Utilisateur');"></div>
+            <div class="content-block">
+                <h3 id="person-name"></h3>
+                <p id="person-age"></p>
+                <p id="person-height"></p>
+                <p id="person-eyes"></p>
+                <p id="person-hair"></p>
+                <p id="person-nationality"></p>
+                <p id="person-boisson"></p>
+            </div>
+            <button class="button" id="facelike-button" onclick="sendFacelikeFromProfile()">Facelike</button>
+            <button class="button" onclick="showPage('photo-5')">Retour</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Photo 6: Facelikes reçus -->
+        <div id="photo-6" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="content-block" id="received-facelikes"></div>
+            <button class="button" onclick="showPage('photo-1')">Retour</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Photo 7: Messages -->
+        <div id="photo-7" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="content-block" id="chat-list"></div>
+            <div class="content-block chat-section" id="chat-section" style="display: none;">
+                <div class="chat-header">
+                    <button class="button back-button" onclick="displayChatList()">Retour aux conversations</button>
+                    <h3 id="chat-partner"></h3>
+                </div>
+                <div id="chat-content"></div>
+                <textarea class="chat-input" id="chat-input" placeholder="Tapez votre message..."></textarea>
+                <button class="button" onclick="sendMessage()">Envoyer</button>
+            </div>
+            <button class="button" onclick="showPage('photo-1')">Retour</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Page Statistiques -->
+        <div id="stats-page" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="content-block">
+                <p>Facelikes envoyés : 12</p>
+                <p>Facelikes reçus : 18</p>
+                <p>Facematchs : 7</p>
+                <p>Facelikes reçus par lieu : Le Nocturne (10), Le Pulse (8)</p>
+                <p>Facelikes émis par lieu : Le Nocturne (8), Le Pulse (4)</p>
+                <p>Facematchs par lieu : Le Nocturne (5), Le Pulse (2)</p>
+                <p>Type de profil attiré : Brune (70%), Yeux verts (40%), Taille 1m65-1m75 (50%)</p>
+            </div>
+            <button class="button" onclick="showPage('photo-1')">Retour</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Page Amis -->
+        <div id="friends-page" class="page">
+            <div class="header">
+                <img src="https://i.imgur.com/ZuiLCGZ.jpeg" alt="FaceParty Logo" class="logo">
+            </div>
+            <div class="content-block">
+                <p>Julie (Facematch le 25/02/2025 - Approbation < 48h)</p>
+                <p>Lucas (Facematch le 20/02/2025 - Approbation < 48h)</p>
+            </div>
+            <button class="button" onclick="showPage('photo-2')">Retour</button>
+            <div class="footer">
+                <p>© FaceParty 2025</p>
+            </div>
+        </div>
+
+        <!-- Bouton central fixe -->
+        <button class="home-button" onclick="showPage('photo-1')">🏠</button>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentChatPartner = null;
+
+        let participants = [
+            { name: 'Amandine', age: 22, height: '1m65', eyes: 'Verts', hair: 'Blond', nationality: 'Française', gender: 'femmes', pic: 'https://via.placeholder.com/150?text=Amandine+22+Blonde+Verts+Française+White+Dress+Blue+Neons' },
+            { name: 'Camille', age: 24, height: '1m70', eyes: 'Marrons', hair: 'Brun', nationality: 'Italienne', gender: 'femmes', pic: 'https://via.placeholder.com/150?text=Camille+24+Brune+Marrons+Italienne+Red+Dress+Red+Lights' },
+            { name: 'Élodie', age: 21, height: '1m62', eyes: 'Bleus', hair: 'Châtain', nationality: 'Française', gender: 'femmes', pic: 'https://via.placeholder.com/150?text=Élodie+21+Châtain+Bleus+Française+Green+Dress+Purple+Neons' },
+            { name: 'Inès', age: 26, height: '1m68', eyes: 'Marrons', hair: 'Brun', nationality: 'Espagnole', gender: 'femmes', pic: 'https://via.placeholder.com/150?text=Inès+26+Brune+Marrons+Espagnole+Black+Dress+Yellow+Neons' },
+            { name: 'Lina', age: 19, height: '1m72', eyes: 'Verts', hair: 'Roux', nationality: 'Suédoise', gender: 'femmes', pic: 'https://via.placeholder.com/150?text=Lina+19+Rousse+Verts+Suédoise+Pink+Dress+Blue+Lights' },
+            { name: 'Maëlle', age: 23, height: '1m67', eyes: 'Bleus', hair: 'Blond', nationality: 'Américaine', gender: 'femmes', pic: 'https://via.placeholder.com/150?text=Maëlle+23+Blonde+Bleus+Américaine+Silver+Dress+Red+Neons' },
+            { name: 'Zoé', age: 20, height: '1m64', eyes: 'Gris', hair: 'Châtain', nationality: 'Française', gender: 'femmes', pic: 'https://via.placeholder.com/150?text=Zoé+20+Châtain+Gris+Française+Navy+Dress+White+Lights' },
+            { name: 'Adrien', age: 25, height: '1m82', eyes: 'Bleus', hair: 'Brun', nationality: 'Français', gender: 'hommes', pic: 'https://via.placeholder.com/150?text=Adrien+25+Brun+Bleus+Français+Black+Shirt+Blue+Neons' },
+            { name: 'Benoît', age: 27, height: '1m78', eyes: 'Verts', hair: 'Châtain', nationality: 'Italien', gender: 'hommes', pic: 'https://via.placeholder.com/150?text=Benoît+27+Châtain+Verts+Italien+Gray+Shirt+Red+Lights' },
+            { name: 'Cédric', age: 21, height: '1m80', eyes: 'Marrons', hair: 'Blond', nationality: 'Britannique', gender: 'hommes', pic: 'https://via.placeholder.com/150?text=Cédric+21+Blond+Marrons+Britannique+White+Tshirt+Green+Neons' },
+            { name: 'Damien', age: 24, height: '1m85', eyes: 'Gris', hair: 'Brun', nationality: 'Français', gender: 'hommes', pic: 'https://via.placeholder.com/150?text=Damien+24+Brun+Gris+Français+Black+Jacket+Purple+Neons' },
+            { name: 'Éric', age: 29, height: '1m79', eyes: 'Bleus', hair: 'Châtain', nationality: 'Suédois', gender: 'hommes', pic: 'https://via.placeholder.com/150?text=Éric+29+Châtain+Bleus+Suédois+Blue+Shirt+Yellow+Neons' },
+            { name: 'Gabriel', age: 22, height: '1m77', eyes: 'Verts', hair: 'Roux', nationality: 'Espagnol', gender: 'hommes', pic: 'https://via.placeholder.com/150?text=Gabriel+22+Roux+Verts+Espagnol+Red+Shirt+Pink+Lights' },
+            { name: 'Julien', age: 26, height: '1m81', eyes: 'Marrons', hair: 'Brun', nationality: 'Marocain', gender: 'hommes', pic: 'https://via.placeholder.com/150?text=Julien+26+Brun+Marrons+Marocain+Brown+Jacket+Blue+Neons' }
+        ];
+
+        function signup() {
+            const nom = document.getElementById('signup-nom').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const prenom = document.getElementById('signup-prenom').value.trim();
+            const boisson = document.getElementById('signup-boisson').value.trim();
+            const taille = document.getElementById('signup-taille').value.trim();
+            const eyes = document.getElementById('signup-eyes').value;
+            const hair = document.getElementById('signup-hair').value;
+            const nationality = document.getElementById('signup-nationality').value;
+            const password = document.getElementById('signup-password').value.trim();
+
+            if (!nom || !email || !prenom || !boisson || !taille || !eyes || !hair || !nationality || !password) {
+                alert('Veuillez remplir tous les champs pour vous inscrire.');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (users[email]) {
+                alert('Cet e-mail est déjà utilisé. Veuillez utiliser un autre e-mail ou vous connecter.');
+                return;
+            }
+
+            users[email] = {
+                nom: nom,
+                email: email,
+                password: password,
+                profile: {
+                    prenom: prenom,
+                    boisson: boisson,
+                    taille: taille,
+                    eyes: eyes,
+                    hair: hair,
+                    nationality: nationality,
+                    profilePic: 'https://via.placeholder.com/150?text=Photo+Utilisateur'
+                },
+                messages: {},
+                friends: [],
+                facelikes: { 
+                    sent: [], 
+                    received: [
+                        'Amandine', 'Camille', 'Élodie', 'Inès', 'Lina', 'Maëlle', 'Zoé',
+                        'Adrien', 'Benoît', 'Cédric', 'Damien', 'Éric', 'Gabriel', 'Julien'
+                    ] 
+                }
+            };
+            localStorage.setItem('users', JSON.stringify(users));
+
+            currentUser = email;
+            showPage('photo-1');
+            loadProfile();
+            displayReceivedFacelikes();
+        }
+
+        function login() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!users[email] || users[email].password !== password) {
+                alert('E-mail ou mot de passe incorrect.');
+                return;
+            }
+
+            currentUser = email;
+            showPage('photo-1');
+            loadProfile();
+            displayReceivedFacelikes();
+        }
+
+        function loadProfile() {
+            if (currentUser) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                const user = users[currentUser];
+                if (user && user.profile) {
+                    document.getElementById('profile-prenom').textContent = user.profile.prenom;
+                    document.getElementById('profile-boisson').textContent = `Boisson préférée : ${user.profile.boisson}`;
+                    document.getElementById('profile-taille').textContent = `Taille : ${user.profile.taille}`;
+                    document.getElementById('profile-eyes').textContent = `Couleur des yeux : ${user.profile.eyes}`;
+                    document.getElementById('profile-hair').textContent = `Couleur des cheveux : ${user.profile.hair}`;
+                    document.getElementById('profile-nationality').textContent = `Nationalité : ${user.profile.nationality}`;
+                    if (user.profile.profilePic) {
+                        document.getElementById('profile-pic').style.backgroundImage = `url(${user.profile.profilePic})`;
+                        document.getElementById('upload-pic').style.display = user.profile.profilePic === 'https://via.placeholder.com/150?text=Photo+Utilisateur' ? 'block' : 'none';
+                    }
+                }
+            }
+        }
+
+        function showEditProfileForm() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const user = users[currentUser];
+            if (user && user.profile) {
+                document.getElementById('edit-prenom').value = user.profile.prenom;
+                document.getElementById('edit-boisson').value = user.profile.boisson;
+                document.getElementById('edit-taille').value = user.profile.taille;
+                document.getElementById('edit-eyes').value = user.profile.eyes;
+                document.getElementById('edit-hair').value = user.profile.hair;
+                document.getElementById('edit-nationality').value = user.profile.nationality;
+            }
+
+            document.getElementById('profile-display').style.display = 'none';
+            document.getElementById('edit-profile-form').style.display = 'block';
+        }
+
+        function saveProfile() {
+            const prenom = document.getElementById('edit-prenom').value.trim();
+            const boisson = document.getElementById('edit-boisson').value.trim();
+            const taille = document.getElementById('edit-taille').value.trim();
+            const eyes = document.getElementById('edit-eyes').value;
+            const hair = document.getElementById('edit-hair').value;
+            const nationality = document.getElementById('edit-nationality').value;
+
+            if (!prenom || !boisson || !taille || !eyes || !hair || !nationality) {
+                alert('Veuillez remplir tous les champs pour sauvegarder les modifications.');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            users[currentUser].profile.prenom = prenom;
+            users[currentUser].profile.boisson = boisson;
+            users[currentUser].profile.taille = taille;
+            users[currentUser].profile.eyes = eyes;
+            users[currentUser].profile.hair = hair;
+            users[currentUser].profile.nationality = nationality;
+            localStorage.setItem('users', JSON.stringify(users));
+
+            document.getElementById('profile-display').style.display = 'block';
+            document.getElementById('edit-profile-form').style.display = 'none';
+            loadProfile();
+        }
+
+        function showPage(pageId) {
+            if (!currentUser && pageId !== 'photo-login') {
+                showPage('photo-login');
+                return;
+            }
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if (pageId === 'photo-7') {
+                displayChatList();
+            } else if (pageId === 'photo-2') {
+                loadProfile();
+                document.getElementById('profile-display').style.display = 'block';
+                document.getElementById('edit-profile-form').style.display = 'none';
+            } else if (pageId === 'photo-6') {
+                displayReceivedFacelikes();
+            } else if (pageId === 'photo-5') {
+                applyFilters();
+            } else {
+                loadData();
+            }
+        }
+
+        function uploadProfilePic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (!file.type.match('image.*')) {
+                    alert('Veuillez sélectionner une image (JPEG, PNG, etc.).');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const profilePicUrl = e.target.result;
+                    const profilePicElement = document.getElementById('profile-pic');
+                    const uploadPicElement = document.getElementById('upload-pic');
+
+                    if (profilePicElement && uploadPicElement) {
+                        profilePicElement.style.backgroundImage = `url(${profilePicUrl})`;
+                        uploadPicElement.style.display = 'none';
+
+                        const users = JSON.parse(localStorage.getItem('users') || '{}');
+                        if (users[currentUser]) {
+                            users[currentUser].profile.profilePic = profilePicUrl;
+                            localStorage.setItem('users', JSON.stringify(users));
+                        }
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function confirmMatch() {
+            alert("Match confirmé comme concluant par les deux parties !");
+            if (currentUser && currentChatPartner) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                users[currentUser].friends.push(currentChatPartner);
+                users[currentChatPartner] = users[currentChatPartner] || { profilePic: participants.find(p => p.name === currentChatPartner).pic, messages: {}, friends: [], facelikes: { sent: [], received: [] } };
+                users[currentChatPartner].friends.push(currentUser);
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('chat-input').value.trim();
+            if (message && currentUser && currentChatPartner) {
+                const chatContent = document.getElementById('chat-content');
+                const newMessage = document.createElement('div');
+                newMessage.className = 'chat-message';
+                newMessage.textContent = `Vous (${new Date().toLocaleTimeString()}) : ${message}`;
+                chatContent.appendChild(newMessage);
+                document.getElementById('chat-input').value = '';
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                users[currentUser].messages[currentChatPartner] = users[currentUser].messages[currentChatPartner] || [];
+                users[currentUser].messages[currentChatPartner].push({ sender: 'you', text: message, time: new Date().toLocaleTimeString() });
+                users[currentChatPartner] = users[currentChatPartner] || { profilePic: participants.find(p => p.name === currentChatPartner).pic, messages: {}, friends: [], facelikes: { sent: [], received: [] } };
+                users[currentChatPartner].messages[currentUser] = users[currentChatPartner].messages[currentUser] || [];
+                users[currentChatPartner].messages[currentUser].push({ sender: currentChatPartner, text: message, time: new Date().toLocaleTimeString() });
+                localStorage.setItem('users', JSON.stringify(users));
+                loadData();
+            }
+        }
+
+        function loadData() {
+            if (currentUser && currentChatPartner) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                if (users[currentUser]) {
+                    const chatContent = document.getElementById('chat-content');
+                    chatContent.innerHTML = '';
+                    const messages = users[currentUser].messages[currentChatPartner] || [];
+                    messages.forEach(msg => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = 'chat-message';
+                        messageDiv.textContent = `${msg.sender === 'you' ? 'Vous' : currentChatPartner} (${msg.time}) : ${msg.text}`;
+                        chatContent.appendChild(messageDiv);
+                    });
+                    document.getElementById('chat-partner').textContent = `Chat avec ${currentChatPartner}`;
+                }
+            }
+        }
+
+        function displayChatList() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const chatList = document.getElementById('chat-list');
+            const chatSection = document.getElementById('chat-section');
+            chatList.innerHTML = '';
+            chatList.style.display = 'block';
+            chatSection.style.display = 'none';
+
+            if (users[currentUser] && users[currentUser].messages) {
+                const conversations = Object.keys(users[currentUser].messages);
+                if (conversations.length === 0) {
+                    chatList.innerHTML = '<p>Aucune conversation pour le moment.</p>';
+                } else {
+                    conversations.forEach(partner => {
+                        const item = document.createElement('div');
+                        item.className = 'list-item';
+                        item.innerHTML = `<span>${partner}</span>`;
+                        item.onclick = () => {
+                            currentChatPartner = partner;
+                            chatList.style.display = 'none';
+                            chatSection.style.display = 'block';
+                            loadData();
+                        };
+                        chatList.appendChild(item);
+                    });
+                }
+            } else {
+                chatList.innerHTML = '<p>Aucune conversation pour le moment.</p>';
+            }
+        }
+
+        function showPersonProfile(person, returnPage = 'photo-5') {
+            const profile = participants.find(p => p.name === person);
+            if (profile) {
+                document.getElementById('person-name').textContent = profile.name;
+                document.getElementById('person-age').textContent = `${profile.age} ans`;
+                document.getElementById('person-height').textContent = `Taille : ${profile.height}`;
+                document.getElementById('person-eyes').textContent = `Yeux : ${profile.eyes}`;
+                document.getElementById('person-hair').textContent = `Cheveux : ${profile.hair}`;
+                document.getElementById('person-nationality').textContent = `Nationalité : ${profile.nationality}`;
+                document.getElementById('person-boisson').textContent = `Boisson préférée : Mojito`;
+                document.getElementById('person-pic').style.backgroundImage = `url(${profile.pic})`;
+                const facelikeButton = document.getElementById('facelike-button');
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                if (users[currentUser] && users[currentUser].facelikes.sent.includes(profile.name)) {
+                    facelikeButton.textContent = 'Demande envoyée';
+                    facelikeButton.classList.add('facelike-sent');
+                    facelikeButton.disabled = true;
+                } else {
+                    facelikeButton.textContent = 'Facelike';
+                    facelikeButton.classList.remove('facelike-sent');
+                    facelikeButton.disabled = false;
+                }
+                const returnButton = document.getElementById('person-profile').querySelector('.button[onclick*="showPage"]');
+                returnButton.setAttribute('onclick', `showPage('${returnPage}')`);
+                showPage('person-profile');
+            }
+        }
+
+        function sendFacelike(person, event) {
+            event.stopPropagation();
+            if (currentUser) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                if (!users[currentUser].facelikes.sent.includes(person)) {
+                    users[currentUser].facelikes.sent.push(person);
+                    users[person] = users[person] || { profilePic: participants.find(p => p.name === person).pic, messages: {}, friends: [], facelikes: { sent: [], received: [] } };
+                    users[person].facelikes.received.push(currentUser);
+                    localStorage.setItem('users', JSON.stringify(users));
+                    const button = event.target;
+                    button.textContent = 'Facelike envoyé';
+                    button.classList.add('facelike-sent');
+                    button.disabled = true;
+                    displayReceivedFacelikes();
+                }
+            }
+        }
+
+        function sendFacelikeFromProfile() {
+            const personName = document.getElementById('person-name').textContent;
+            const facelikeButton = document.getElementById('facelike-button');
+            if (currentUser && personName && facelikeButton) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                if (!users[currentUser].facelikes.sent.includes(personName)) {
+                    users[currentUser].facelikes.sent.push(personName);
+                    users[personName] = users[personName] || { 
+                        profilePic: participants.find(p => p.name === personName).pic, 
+                        messages: {}, 
+                        friends: [], 
+                        facelikes: { sent: [], received: [] } 
+                    };
+                    users[personName].facelikes.received.push(currentUser);
+                    localStorage.setItem('users', JSON.stringify(users));
+                    facelikeButton.textContent = 'Demande envoyée';
+                    facelikeButton.classList.add('facelike-sent');
+                    facelikeButton.disabled = true;
+                }
+            }
+        }
+
+        function acceptFacelike(person) {
+            if (currentUser) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                users[currentUser].facelikes.received = users[currentUser].facelikes.received.filter(p => p !== person);
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                const chatContent = document.getElementById('chat-content');
+                chatContent.innerHTML = '';
+                const initialMessage = document.createElement('div');
+                initialMessage.className = 'chat-message';
+                initialMessage.textContent = `Vous (${new Date().toLocaleTimeString()}) : Salut, ravi de te matcher !`;
+                
+                users[currentUser].messages[person] = users[currentUser].messages[person] || [];
+                users[currentUser].messages[person].push({ sender: 'you', text: 'Salut, ravi de te matcher !', time: new Date().toLocaleTimeString() });
+                users[person] = users[person] || { profilePic: participants.find(p => p.name === person).pic, messages: {}, friends: [], facelikes: { sent: [], received: [] } };
+                users[person].messages[currentUser] = users[person].messages[currentUser] || [];
+                users[person].messages[currentUser].push({ sender: 'you', text: 'Salut, ravi de te matcher !', time: new Date().toLocaleTimeString() });
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                displayReceivedFacelikes();
+                currentChatPartner = person;
+                showPage('photo-7');
+                loadData();
+            }
+        }
+
+        function refuseFacelike(person) {
+            if (currentUser) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                users[currentUser].facelikes.received = users[currentUser].facelikes.received.filter(p => p !== person);
+                localStorage.setItem('users', JSON.stringify(users));
+                displayReceivedFacelikes();
+            }
+        }
+
+        function displayReceivedFacelikes() {
+            if (currentUser) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                const receivedFacelikes = users[currentUser].facelikes.received || [];
+                const facelikesDiv = document.getElementById('received-facelikes');
+                facelikesDiv.innerHTML = '';
+                if (receivedFacelikes.length === 0) {
+                    facelikesDiv.innerHTML = '<p>Aucun facelike reçu pour le moment.</p>';
+                } else {
+                    receivedFacelikes.forEach(person => {
+                        const profile = participants.find(p => p.name === person);
+                        if (profile) {
+                            const item = document.createElement('div');
+                            item.className = 'list-item';
+                            item.innerHTML = `
+                                <span onclick="showPersonProfile('${profile.name}', 'photo-6')">${profile.name} vous a faceliké</span>
+                                <div>
+                                    <button class="nav-button" onclick="acceptFacelike('${profile.name}')">Accepter</button>
+                                    <button class="nav-button" onclick="refuseFacelike('${profile.name}')">Refuser</button>
+                                </div>
+                            `;
+                            facelikesDiv.appendChild(item);
+                        }
+                    });
+                }
+            }
+        }
+
+        function applyFilters() {
+            const preferences = document.getElementById('filter-preferences').value;
+            const age = document.getElementById('filter-age').value;
+            const height = document.getElementById('filter-height').value;
+            const eyes = document.getElementById('filter-eyes').value;
+            const hair = document.getElementById('filter-hair').value;
+            const nationality = document.getElementById('filter-nationality').value;
+
+            const filteredParticipants = participants.filter(p => {
+                if (preferences !== 'all' && p.gender !== preferences) return false;
+                if (age !== 'all' && !((age === '18-25' && p.age >= 18 && p.age <= 25) || (age === '26-30' && p.age >= 26 && p.age <= 30))) return false;
+                if (height !== 'all' && !((height === 'petit' && (p.height === '1m60' || p.height === '1m65' || p.height === '1m67' || p.height === '1m66' || p.height === '1m63')) || (height === 'grand' && (p.height === '1m70' || p.height === '1m75' || p.height === '1m72' || p.height === '1m76' || p.height === '1m77' || p.height === '1m78' || p.height === '1m79' || p.height === '1m80' || p.height === '1m81' || p.height === '1m82' || p.height === '1m83' || p.height === '1m85' || p.height === '1m88')))) return false;
+                if (eyes !== 'all' && p.eyes.toLowerCase() !== eyes) return false;
+                if (hair !== 'all' && p.hair.toLowerCase() !== hair) return false;
+                if (nationality !== 'all') {
+                    const nationalities = {
+                        'france': ['Française', 'Français'],
+                        'italie': ['Italienne'],
+                        'royaume-uni': ['Britannique'],
+                        'suede': ['Suédoise', 'Suédois'],
+                        'espagne': ['Espagnole', 'Espagnol'],
+                        'usa': ['Américaine', 'Américain'],
+                        'maroc': ['Marocaine', 'Marocain']
+                    };
+                    if (!nationalities[nationality].includes(p.nationality)) return false;
+                }
+                return true;
+            });
+
+            const participantsList = document.getElementById('participants-list');
+            participantsList.innerHTML = '';
+            filteredParticipants.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <span class="participant-name" data-name="${p.name}">${p.name}, ${p.age} ans, ${p.height}, Yeux ${p.eyes}, ${p.hair}, ${p.nationality}</span>
+                    <button class="nav-button" onclick="sendFacelike('${p.name}', event)">Facelike</button>
+                `;
+                participantsList.appendChild(item);
+            });
+
+            const participantNames = document.querySelectorAll('.participant-name');
+            participantNames.forEach(nameElement => {
+                nameElement.addEventListener('click', () => {
+                    const name = nameElement.getAttribute('data-name');
+                    showPersonProfile(name, 'photo-5');
+                });
+            });
+        }
+
+        function searchPlaces() {
+            const searchValue = document.getElementById('search-bar').value.toLowerCase();
+            const placesList = document.getElementById('places-list');
+            placesList.innerHTML = '';
+            const places = ['Le Nocturne', 'Le Pulse'].filter(place => place.toLowerCase().includes(searchValue));
+            places.forEach(place => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.textContent = place;
+                item.onclick = () => showPage('photo-4');
+                placesList.appendChild(item);
+            });
+        }
+
+        function searchPlacesFull() {
+            const searchValue = document.getElementById('search-bar-full').value.toLowerCase();
+            const placesList = document.getElementById('places-list-full');
+            placesList.innerHTML = '';
+            const places = ['Le Nocturne', 'Le Pulse'].filter(place => place.toLowerCase().includes(searchValue));
+            places.forEach(place => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.textContent = place;
+                item.onclick = () => showPage('photo-4');
+                placesList.appendChild(item);
+            });
+        }
+
+        showPage('photo-login');
+    </script>
+</body>
+</html>
